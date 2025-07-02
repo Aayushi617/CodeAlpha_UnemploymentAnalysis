@@ -12,7 +12,7 @@ st.title("📊 Unemployment Analysis in India (Pre vs During COVID)")
 # ---- Load Data ----
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Unemployment in India.csv")
+    df = pd.read_csv("Unemployment_Rate_upto_11_2020.csv")
     df['Date'] = pd.to_datetime(df['Date'], dayfirst=True)
     df['Covid Period'] = df['Date'].apply(lambda x: 'Pre-COVID' if x < pd.to_datetime('2020-03-01') else 'During-COVID')
     return df
