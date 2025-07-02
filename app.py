@@ -13,26 +13,22 @@ st.title("📊 Unemployment Analysis in India (Pre vs During COVID)")
 
 @st.cache_data
 def load_data():
-    # Load the dataset
     df = pd.read_csv("Unemployment_Rate_upto_11_2020.csv")
     
-    # 🔍 Print column names in Streamlit (to debug if needed)
+    # Debug: Show actual column names
     st.write("🔍 Columns in dataset:", df.columns.tolist())
     
-    # ✅ Clean column names: remove spaces and hidden BOM characters
+    # Clean column names
     df.columns = df.columns.str.strip().str.replace('\ufeff', '')
-    
-    # ✅ Convert Date column to datetime
+
+    # Convert Date column
     df['Date'] = pd.to_datetime(df['Date'], dayfirst=True)
-    
-    # ✅ Add COVID period tag
+
+    # Add COVID period
     df['Covid Period'] = df['Date'].apply(
         lambda x: 'Pre-COVID' if x < pd.to_datetime('2020-03-01') else 'During-COVID'
     )
-    
-    return df
 
-    df['Covid Period'] = df['Date'].apply(lambda x: 'Pre-COVID' if x < pd.to_datetime('2020-03-01') else 'During-COVID')
     return df
 
 df = load_data()
@@ -64,13 +60,16 @@ st.pyplot(fig2)
 # ---- Region-wise Comparison ----
 st.subheader("🌍 Region-wise Unemployment Rate Comparison")
 
-region = st.selectbox("Select a Region", sorted(df['Region'].unique()))
-region_df = df[df['Region'] == region]
+if 'Region' in df.columns:
+    region = st.selectbox("Select a Region", sorted(df['Region'].dropna().unique()))
+    region_df = df[df['Region'] == region]
 
-fig3, ax3 = plt.subplots()
-sns.lineplot(data=region_df, x='Date', y='Estimated Unemployment Rate (%)', ax=ax3, color='teal')
-ax3.set_title(f"Unemployment Trend in {region}")
-st.pyplot(fig3)
+    fig3, ax3 = plt.subplots()
+    sns.lineplot(data=region_df, x='Date', y='Estimated Unemployment Rate (%)', ax=ax3, color='teal')
+    ax3.set_title(f"Unemployment Trend in {region}")
+    st.pyplot(fig3)
+else:
+    st.warning("⚠️ 'Region' column not found in the dataset.")
 
 # ---- Insights ----
 st.subheader("🧠 Key Insights")
