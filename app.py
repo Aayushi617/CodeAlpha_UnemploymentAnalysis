@@ -10,10 +10,28 @@ st.set_page_config(page_title="Unemployment Analysis", layout="wide")
 st.title("📊 Unemployment Analysis in India (Pre vs During COVID)")
 
 # ---- Load Data ----
-@st.cache_data
+
+    @st.cache_data
 def load_data():
+    # Load the dataset
     df = pd.read_csv("Unemployment_Rate_upto_11_2020.csv")
+    
+    # 🔍 Print column names in Streamlit (to debug if needed)
+    st.write("🔍 Columns in dataset:", df.columns.tolist())
+    
+    # ✅ Clean column names: remove spaces and hidden BOM characters
+    df.columns = df.columns.str.strip().str.replace('\ufeff', '')
+    
+    # ✅ Convert Date column to datetime
     df['Date'] = pd.to_datetime(df['Date'], dayfirst=True)
+    
+    # ✅ Add COVID period tag
+    df['Covid Period'] = df['Date'].apply(
+        lambda x: 'Pre-COVID' if x < pd.to_datetime('2020-03-01') else 'During-COVID'
+    )
+    
+    return df
+
     df['Covid Period'] = df['Date'].apply(lambda x: 'Pre-COVID' if x < pd.to_datetime('2020-03-01') else 'During-COVID')
     return df
 
