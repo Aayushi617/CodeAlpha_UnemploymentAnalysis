@@ -11,7 +11,7 @@ st.title("📊 Unemployment Analysis in India (Pre vs During COVID)")
 
 # ---- Load Data ----
 
-    @st.cache_data
+@st.cache_data
 def load_data():
     # Load the dataset
     df = pd.read_csv("Unemployment_Rate_upto_11_2020.csv")
